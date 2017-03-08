@@ -136,7 +136,7 @@ int flow_ctrl_pause(char *ifname, char *mac_address, int pause_time)
 #ifdef USE_MAIN
 int usage()
 {
-    char msg[] = "Usage: ./flow_ctrl_pause [if_name]";
+    char msg[] = "Usage: ./flow_ctrl_pause if_name pause_time(max 65535)";
     fprintf(stderr, "%s\n", msg);
 
     return 0;
@@ -145,20 +145,24 @@ int usage()
 int main(int argc, char *argv[])
 {
     char *if_name;
+    int pause_time;
 
-    if (argc == 1) {
-        if_name = "eth0";
-    }
-    else if (argc == 2) {
-        if_name = argv[1];
-    }
-    else {
+    if (argc != 3) {
         usage();
         exit(1);
     }
 
-    fprintf(stderr, "Use %s to pause packet\n", if_name);
-    flow_ctrl_pause(if_name, "01:80:c2:00:00:01", 65535);
+    if_name = argv[1];
+    pause_time = strtol(argv[2], NULL, 0);
+    if (pause_time < 0 || pause_time > 65536) {
+        fprintf(stderr, "pause time too large: %ld (max 65535)\n", (long) pause_time);
+        exit(1);
+    }
+
+    fprintf(stderr, "if_name: %s pause_time: %ld\n", if_name, (long) pause_time);
+    if (flow_ctrl_pause(if_name, "01:80:c2:00:00:01", pause_time) < 0) {
+        errx(1, "flow_ctrl_pause() error");
+    }
 
     return 0;
 }
