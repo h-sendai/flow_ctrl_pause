@@ -4,3 +4,4 @@ syntax: glob
 *.d
 *~
 flow_ctrl_pause
+data
