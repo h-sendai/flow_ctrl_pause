@@ -1,0 +1,22 @@
+サーバー側:     xinetdのchargen
+クライアント側: nc server 19 > /dev/null
+でtcpフローを作り、tcpdumpでキャプチャ。キャプチャ中pauseパケットを
+3回手動で投げた。
+chargen-pause-760MB.cap.gz は展開すると760MBくらいになる。
+tcpdump -rで読んで時間差情報を追加したのがchargen.cap.txt。
+
+fgrep 'chargen >' chargen.cap.txt
+
+とするとパケットが送られてきた時間間隔が(おおよそ)わかる
+
+pauseパケットで指定した時間は最大の65535時間。
+時間単位は512ビット時間で1GbEの場合は1ビット時間は1ns。
+512ビット時間は512ns。
+65535を指定した場合は512*65535=33553920ns=33.5msになる。
+
+ハードウェア構成:
+
+colors (e1000 private 192.168.1.20) - daqmwpc5 (igb private 192.168.1.202)
+colorsがserver
+daqmwpc5がclient
+centrecomのGS908TPLで接続。
