@@ -134,9 +134,31 @@ int flow_ctrl_pause(char *ifname, char *mac_address, int pause_time)
 }
 
 #ifdef USE_MAIN
+int usage()
+{
+    char msg[] = "Usage: ./flow_ctrl_pause [if_name]";
+    fprintf(stderr, "%s\n", msg);
+
+    return 0;
+}
+
 int main(int argc, char *argv[])
 {
-    flow_ctrl_pause("eth0", "01:80:c2:00:00:01", 65535);
+    char *if_name;
+
+    if (argc == 1) {
+        if_name = "eth0";
+    }
+    else if (argc == 2) {
+        if_name = argv[1];
+    }
+    else {
+        usage();
+        exit(1);
+    }
+
+    fprintf(stderr, "Use %s to pause packet\n", if_name);
+    flow_ctrl_pause(if_name, "01:80:c2:00:00:01", 65535);
 
     return 0;
 }
