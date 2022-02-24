@@ -4,6 +4,7 @@
 *~
 data
 data2
+log
 flow_ctrl_pause
 #
 # to create empty directory and add it to repository:
